@@ -86,16 +86,13 @@ db.submission.aggregate([
     {
         $lookup: {
             from: 'vendor',
-            localField: 'vendor_id',
-            foreignField: 'id',
+            localField: 'city',
+            foreignField: 'city',
             as: 'vendor'
         }
     },
     {
         $unwind: "$vendor"
-    },
-    {
-        $match: { city: {$eq: '$vendor.city'} }
     }
 ]).pretty()
 ~~~
