@@ -1,4 +1,4 @@
-### Assin 1 in Mongo Aggregate Framework
+### Assin 1 for Mongo Aggregate Framework
 ###### 1. list of consultants having more than one submission
 ~~~JavaScript
 db.submission.aggregate([
@@ -86,16 +86,13 @@ db.submission.aggregate([
     {
         $lookup: {
             from: 'vendor',
-            localField: 'vendor_id',
-            foreignField: 'id',
+            localField: 'city',
+            foreignField: 'city',
             as: 'vendor'
         }
     },
     {
         $unwind: "$vendor"
-    },
-    {
-        $match: { city: {$eq: '$vendor.city'} }
     }
 ]).pretty()
 ~~~
@@ -103,23 +100,19 @@ db.submission.aggregate([
 ~~~JavaScript
 db.submission.aggregate([
     {
-        $lookup: {
-            from: 'consultant',
-            localField: 'consultant_id',
-            foreignField: 'id',
-            as: 'consultant'
+        $group: {
+            _id: {
+                submission_city: '$city',
+                consulatant_id: '$consultant_id'
+            }
         }
-    },
-    {
-        $unwind: "$consultant"
     },
     {
         $group: {
             _id: {
-                submission_city: '$city',
-                consulatant_city: '$consultant.city'
+                submission_city: "$_id.submission_city",
             },
-            noOfSubmissions: {$sum: 1}
+            count: {$sum: 1}
         }
     }
 ]).pretty()
